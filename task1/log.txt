@@ -1,0 +1,11 @@
+commit 871c084519f38996459cd55d4aabb29923f1cc25
+Author: TTOJlTOPA <zhuk.valeriy.98@gmail.com>
+Date:   Tue Feb 7 11:55:30 2017 +0300
+
+    add status.txt
+
+commit d3984a4613492bcc090d2f9a70c4961d22caa2b3
+Author: TTOJlTOPA <zhuk.valeriy.98@gmail.com>
+Date:   Tue Feb 7 11:51:19 2017 +0300
+
+    add .gitignore
