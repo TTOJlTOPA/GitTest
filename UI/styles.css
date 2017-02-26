@@ -35,11 +35,12 @@ h1 {
 }
 
 h2 {
-    font: 18px/23px Georgia, sans-serif;
+    margin: 4px;
+    font: 18px/20px Georgia, sans-serif;
 }
 
 h3 {
-    font: 16px/21px Georgia, sans-serif;
+    font: 16px/18px Georgia, sans-serif;
 }
 
 input {
@@ -176,7 +177,7 @@ div#news a:hover {
 div#filters {
     float: right;
     width: 21%;
-    height: 200px;
+    height: 500px;
     margin-top: 1%;
     color: #000000;
     border-radius: 10px;
