@@ -139,6 +139,7 @@ div#news a:hover {
 .tags {
     width: 100%;
     margin-right: 10px;
+    border-radius: 2px;
     font: 15px/20px Georgia, sans-serif;
     box-shadow: 0 0 1px #000000;
 }
@@ -218,6 +219,21 @@ div#tagsFilter input {
     font: 18px/23px Georgia, sans-serif;
     text-align: center;
     background-color: #272626;
+}
+
+/* Paginator */
+.paginator {
+    width: 300px;
+    padding: 10px;
+    margin: auto;
+}
+
+.paginator a,
+.paginator span {
+    display: inline-block;
+    height: 40px;
+    min-width: 20px;
+    padding: 0px 5px;
 }
 
 /* Footer */
