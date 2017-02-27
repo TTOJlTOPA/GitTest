@@ -112,7 +112,7 @@ div#news p {
 }
 
 div#news a:hover {
-    -webkit-box-shadow: 0 0 10px #cd7f32;
+    -webkit-box-shadow: 0 0 10px 3px #cd7f32;
 }
 
 .newsHeader {
@@ -192,7 +192,7 @@ div#filters h1 {
 }
 
 div#filters a:hover {
-    -webkit-box-shadow: 0 0 10px #cd7f32;
+    -webkit-box-shadow: 0 0 10px 1px #cd7f32;
 }
 
 div#authorFilter input {
@@ -233,7 +233,7 @@ div#tagsFilter input {
     display: inline-block;
     height: 40px;
     min-width: 20px;
-    padding: 0px 5px;
+    padding: 0 5px;
 }
 
 /* Footer */
