@@ -56,25 +56,25 @@ header {
 }
 
 /* Type of page */
-span#feed {
+#feed {
     margin-left: 1%;
     font: 35px/40px Georgia, sans-serif;
     text-align: center;
 }
 
 /* Actions */
-div#actions {
+#actions {
     width: 50%;
     margin-right: 1%;
     float: right;
     text-align: right;
 }
 
-div#actions a:hover {
+#actions a:hover {
     -webkit-box-shadow: 0 0 10px #cd7f32;
 }
 
-a#add {
+#add {
     margin-right: 3%;
     padding: 5px;
     border-radius: 10px;
@@ -83,13 +83,13 @@ a#add {
     background-color:#3a3733;
 }
 
-span#user {
+#user {
     margin-right: 3%;
     font: 20px/40px Georgia, sans-serif;
     text-align: center;
 }
 
-a#logout {
+#logout {
     padding: 5px;
     border-radius: 10px;
     font: 20px/40px Georgia, sans-serif;
@@ -98,20 +98,20 @@ a#logout {
 }
 
 /* News */
-div#news {
+#news {
     float: left;
     width: 75%;
     margin: 2%;
 }
 
-div#news p {
+#news p {
     padding: 0.3%;
     background-color: #e0dbd2;
     border-radius: 5px;
     box-shadow: 0 0 5px #000000;
 }
 
-div#news a:hover {
+#news a:hover {
     -webkit-box-shadow: 0 0 10px 3px #cd7f32;
 }
 
@@ -187,25 +187,17 @@ div#filters {
     box-shadow: 0 0 5px #000000;
 }
 
-div#filters h1 {
+#filters h1 {
     color: #000000;
 }
 
-div#filters a:hover {
+#filters a:hover {
     -webkit-box-shadow: 0 0 10px 1px #cd7f32;
 }
 
-div#authorFilter input {
-    margin: 7px;
-    width: 50%;
-}
-
-div#dateFilter input {
-    margin: 7px;
-    width: 50%;
-}
-
-div#tagsFilter input {
+#authorFilter input,
+#dateFilter input,
+#tagsFilter input {
     margin: 7px;
     width: 50%;
 }
