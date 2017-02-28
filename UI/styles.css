@@ -154,7 +154,7 @@ header {
     border-radius: 10px;
     font: 18px/260% Georgia, sans-serif;
     text-align: center;
-    background-color: #272626;
+    background-color: #3a3733;
 }
 
 .editButton {
@@ -162,7 +162,7 @@ header {
     border-radius: 10px;
     font: 18px/260% Georgia, sans-serif;
     text-align: center;
-    background-color: #272626;
+    background-color: #3a3733;
 }
 
 .deleteButton {
@@ -171,11 +171,11 @@ header {
     border-radius: 10px;
     font: 18px/260% Georgia, sans-serif;
     text-align: center;
-    background-color: #272626;
+    background-color: #3a3733;
 }
 
 /* Filters */
-div#filters {
+#filters {
     float: right;
     width: 21%;
     height: 500px;
@@ -210,7 +210,7 @@ div#filters {
     border-radius: 10px;
     font: 18px/23px Georgia, sans-serif;
     text-align: center;
-    background-color: #272626;
+    background-color: #3a3733;
 }
 
 /* Paginator */
