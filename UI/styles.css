@@ -19,6 +19,7 @@ html {
 }
 
 body {
+    min-width: 1000px;
     width: 100%;
     margin: auto;
     font: 16px/18px Georgia, sans-serif;
