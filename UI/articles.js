@@ -1,4 +1,4 @@
-var articles = [
+let articles = [
     {
         id: "1",
         title: "Начинается разработка OpenJDK 10",
@@ -1020,7 +1020,7 @@ var articles = [
     }
 ];
 
-var tags = ["java", "JDK 10", "программирование", "процессоры", "intel", "intel atom", "JDK 9", "космонавтика", "луна",
+let tags = ["java", "JDK 10", "программирование", "процессоры", "intel", "intel atom", "JDK 9", "космонавтика", "луна",
     "полёт на луну", "НАСА", "spacex", "утечка", "безопасность", "шифрование", "https", "eff", "экология", "Земля",
     "антропоцен", "5g", "сотовая связь", "samsung", "exynos", "биотехнологии", "мыши", "мозг", "физика", "неудача",
     "потрачено", "NASA", "астрономия", "космос", "экзопланеты", "робототехника", "китай", "будущее", "АЭС", "авария",
@@ -1029,9 +1029,9 @@ var tags = ["java", "JDK 10", "программирование", "процес�
     "расследование"];
 
 function getArticles(skip, top, filterConfig){
-    var result = articles;
-    var from = skip || 0;
-    var number = top || 10;
+    let result = articles;
+    let from = skip || 0;
+    let number = top || 10;
     if (filterConfig != undefined) {
         if (filterConfig.author != undefined) {
             result = result.filter(function (element) {
@@ -1060,44 +1060,48 @@ function getArticles(skip, top, filterConfig){
 }
 
 function getArticle(findId) {
-    return articles.filter(function (element) {
+    return articles.find(function (element) {
         return element.id == findId;
-    })[0];
+    });
 }
 
 function validateArticle(article) {
-    if (article.title != undefined && (article.title.length > 100 || article.title.length == 0)) {
+    if (article.id != undefined &&
+        (typeof(article.id) != "string" || article.id.length == 0) && articles.filter(function (element) {
+            return element.id == article.id;
+        }).length != 0) {
         return false;
-    } else if (article.tags != undefined && (article.tags.length == 0 || article.tags.length > 5)) {
+    } else if (article.title != undefined &&
+        (typeof(article.title) != "string" || article.title.length > 100 || article.title.length == 0)) {
         return false;
-    } else if (article.summary != undefined && (article.summary.length == 0 || article.summary.length > 200)) {
+    } else if (article.tags != undefined &&
+        (!(article.tags instanceof Array) || article.tags.length == 0 || article.tags.length > 5)) {
         return false;
-    } else if (article.tags != undefined && !article.tags.every(function (tag) {
-            if (tags.indexOf(tag) >= 0) {
-                return true;
-            } else {
-                return false;
-            }
-        })){
+    } else if (article.summary != undefined &&
+        (typeof(article.summary) != "string" || article.summary.length == 0 || article.summary.length > 200)) {
         return false;
-    } else {
-        return true;
-    }
+    } else if (article.createdAt != undefined && !(article.createdAt instanceof Date)) {
+        return false;
+    } else if (article.author != undefined && (typeof(article.author) != "string" || article.author.length == 0)) {
+        return false;
+    } else if (article.content != undefined && (typeof(article.content) != "string" || article.content.length == 0)) {
+        return false;
+    } else return !(article.tags != undefined && !article.tags.every(function (tag) {
+        return tags.indexOf(tag) >= 0 && typeof(tag) == "string";
+    }));
 }
 
 function addArticle(article) {
-    var prevSize = articles.length;
+    let prevSize = articles.length;
     if(!validateArticle(article)) {
         return false;
-    } else if(prevSize == articles.push(article)) {
-        return false;
-    } else {
-        return true;
-    }
+    } else return prevSize != articles.push(article);
 }
 
 function removeArticle(removeId) {
-    var removeIndex = articles.indexOf(getArticle(removeId));
+    let removeIndex = articles.findIndex(function (element) {
+        return element.id == removeId;
+    });
     if (removeIndex != -1) {
         articles.splice(removeIndex, 1);
         return true;
@@ -1107,7 +1111,9 @@ function removeArticle(removeId) {
 }
 
 function editArticle(editId, article) {
-    var editIndex = articles.indexOf(getArticle(editId));
+    let editIndex = articles.findIndex(function (element) {
+        return element.id == editId;
+    });
     if(!validateArticle(article) || editIndex < 0) {
         return false;
     }
@@ -1126,7 +1132,7 @@ function editArticle(editId, article) {
     return true;
 }
 
-var testArticle1 = {
+let testArticle1 = {
     id: "21",
     title: "asssssssssfdsfsdfsd",
     summary: "dsfsdfsdfsdfds",
@@ -1135,11 +1141,11 @@ var testArticle1 = {
     tags: ["авария", "JDK 10", "java"],
     content: "sdfsdfsdfsdf"
 };
-var testArticle2 = {
-    summary: "dsddddddddd",
+let testArticle2 = {
+    summary: "aaaaaaaaa",
     tags: ["java", "ии"]
 };
-var testArticle3 = {
+let testArticle3 = {
     id: "24",
     title: "dsfsd",
     summary: "qwefa",
@@ -1148,23 +1154,23 @@ var testArticle3 = {
     tags: ["ccc", "JDK 10", "java"],
     content: "sdfsdfsdfsdf"
 };
-var testFilter1 = {
+let testFilter1 = {
     author: "alizar"
 };
-var testFilter2 = {
+let testFilter2 = {
     dateFrom: new Date(2017, 0, 20),
     dateTo: new Date(2017, 1, 20)
 };
-var testFilter3 = {
+let testFilter3 = {
     tags: ["java"]
 };
-var testFilter4 = {
+let testFilter4 = {
     author: "alizar",
     dateFrom: new Date(2017, 0),
     dateTo: new Date(2017, 1),
     tags: ["google"]
 };
-var testFilter5 = {
+let testFilter5 = {
     author: "asdas"
 };
 
