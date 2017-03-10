@@ -3,119 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <title>Новостной портал</title>
-    <link rel="icon" type="image/png" href="images/logo.png"/>
-    <link href="styles.css" rel="stylesheet"/>
-    <script src="articles.js" async></script>
+    <link rel = "icon" type = "image/png" href = "images/logo.png"/>
+    <link href = "styles.css" rel = "stylesheet"/>
+    <script src = "articles.js" async></script>
 </head>
 <body>
     <header>
-        <span id="feed">Лента новостей</span>
-        <div id="actions">
-            <a id="add" href="#">Добавить новость</a>
-            <span id="user">TTOJlTOPA</span>
-            <a id="logout" href="#">Выйти</a>
+        <span class = "feed">Лента новостей</span>
+        <div class = "actions">
+            <a class = "add" href = "#">Добавить новость</a>
+            <span class = "user">TTOJlTOPA</span>
+            <a class = "logout" href = "#">Выйти</a>
         </div>
     </header>
-    <div id="news">
-        <article>
-            <div class="newsHeader">
-                <h1>О чём я тогда думал...</h1>
-                <div class="author">Psycho007</div>
-                <div class="date">20.03.2015 14:21</div>
-                <span class="tags">школа</span><span class="tags">схема</span><span class="tags">хитрость</span>
-            </div>
-            <p>В младших классах говорил, что мне нравится девочка и мама давала мне с собой шоколадку для нее.
-                Но шоколадку я отдавал бомжу, а он за это провожал меня в школу и я всем хвастался, что живу с
-                бомжами. Не знаю о чем я тогда думал, но все мне завидовали.</p>
-            <div class="newsActions">
-                <a class="viewButton" href="#">Показать новость</a>
-                <a class="editButton" href="#">Редактировать</a>
-                <a class="deleteButton" href="#">Удалить</a>
-            </div>
-        </article>
-        <article>
-            <div class="newsHeader">
-                <h1>Удачный розыгрыш на 1 апреля</h1>
-                <div class="author">gavrilchik</div>
-                <div class="date">31.03.2015 19:33</div>
-                <span class="tags">1 апреля</span><span class="tags">вот это поворот</span>
-            </div>
-            <p>Решил я в прошлом году на 1 апреля разыграть свою девушку.
-                Так вот, завтра будет год, как мы расстались...</p>
-            <div class="newsActions">
-                <a class="viewButton" href="#">Показать новость</a>
-                <a class="editButton" href="#">Редактировать</a>
-                <a class="deleteButton" href="#">Удалить</a>
-            </div>
-        </article>
-        <article>
-            <div class="newsHeader">
-                <h1>Собеседование</h1>
-                <div class="author">Tornolf</div>
-                <div class="date">25.02.2015 12:59</div>
-                <span class="tags">история</span><span class="tags">собеседование</span>
-            </div>
-            <p>"Был сегодня на собеседовании в компании "...".
-                Хр-менеджер дала мне ноутбук и сказала: "попробуйте-ка мне его продать...".
-                Ну, я взял ноут и вышел с ним из комнаты, а затем ... вообще ушел.
-                Когда я пришел домой мне позвонил хр-менеджер и стала истерично кричать: "немедленно верни мой ноут обратно!"
-                Я сказал: 200 баксов и ноут ваш...." ))</p>
-            <div class="newsActions">
-                <a class="viewButton" href="#">Показать новость</a>
-                <a class="editButton" href="#">Редактировать</a>
-                <a class="deleteButton" href="#">Удалить</a>
-            </div>
-        </article>
-        <article>
-            <div class="newsHeader">
-                <h1>Ошибка резидента</h1>
-                <div class="author">JediMik</div>
-                <div class="date">10.02.2017 10:10</div>
-                <span class="tags">шутка</span><span class="tags">прикол</span><span class="tags">трудности перевода</span>
-            </div>
-            <p>Подруга познакомилась с американцем. Узнают друг друга:
-                - Откуда ты? - спрашивает он.
-                - Из Дубны.
-                - Это город, где ядерное оружие делают?
-                - Точно, откуда ты знаешь? - удивилась она.
-                - эээ. Мы часто шутим, что у вас в России в каждом городе ядерное оружие делают.</p>
-            <div class="newsActions">
-                <a class="viewButton" href="#">Показать новость</a>
-                <a class="editButton" href="#">Редактировать</a>
-                <a class="deleteButton" href="#">Удалить</a>
-            </div>
-        </article>
-    </div>
-    <div id="filters">
+    <div class = "article-list"></div>
+    <div class = "filters">
         <h1>Фильтры</h1>
-        <div id="authorFilter">
+        <div class = "author-filter">
             <h2>По автору:</h2>
-            <input type="text" name="authorInput" value="Автор">
-            <a class="confirmFilter" href="#">Применить</a>
+            <input type = "text" name = "author-input" placeholder = "Автор">
+            <a class = "confirm-filter" href = "#">Применить</a>
         </div>
-        <div id="dateFilter">
+        <div class = "date-filter">
             <h2>По дате добавления:</h2>
             <h3>С:</h3>
-            <input type="date" name="dateFrom">
+            <input type = "date" name = "date-from">
             <h3>По:</h3>
-            <input type="date" name="dateTo">
-            <a class="confirmFilter" href="#">Применить</a>
+            <input type = "date" name = "date-to">
+            <a class = "confirm-filter" href = "#">Применить</a>
         </div>
-        <div id="tagsFilter">
+        <div class = "tags-filter">
             <h2>По тегам:</h2>
-            <input type="text" name="tagsInput" value="Тег">
-            <a class="confirmFilter" href="#">Применить</a>
+            <input type = "text" name = "tagsInput" placeholder = "Тег">
+            <a class = "confirm-filter" href = "#">Применить</a>
         </div>
     </div>
-    <div class="paginator">
-        <a href="#">Назад</a>
-        <a href="#">1</a>
-        <a href="#">2</a>
+    <div class = "paginator">
+        <a href = "#">Назад</a>
+        <a href = "#">1</a>
+        <a href = "#">2</a>
         <span>&hellip;</span>
-        <a href="#">9</a>
-        <a href="#">10</a>
-        <a href="#">Вперёд</a>
+        <a href = "#">9</a>
+        <a href = "#">10</a>
+        <a href = "#">Вперёд</a>
     </div>
+    <template id = "news">
+        <div class = "article" data-id = "id">
+            <div class = "news-header">
+                <h1 class = "title">Заголовок</h1>
+                <div class = "author">Автор</div>
+                <div class = "date">20.03.2015 14:21</div>
+                <span class = "tags"></span>
+                <span class = "tags"></span>
+                <span class = "tags"></span>
+                <span class = "tags"></span>
+                <span class = "tags"></span>
+            </div>
+            <p class = "summary">Текст</p>
+            <div class = "news-actions">
+                <a class = "view-button" href = "#">Показать новость</a>
+                <a class = "edit-button" href = "#">Редактировать</a>
+                <a class = "delete-button" href = "#">Удалить</a>
+            </div>
+        </div>
+    </template>
     <footer>Новостной портал. Жук Валерий 2 курс 6 группа. fpm.zhukVV@bsu.by. 26.02.2017</footer>
 </body>
 </html>
