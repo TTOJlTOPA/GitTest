@@ -60,18 +60,18 @@ header {
 }
 
 /* Actions */
-.actions {
+.header-actions {
     width: 50%;
     margin-right: 1%;
     float: right;
     text-align: right;
 }
 
-.actions a:hover {
+.header-actions a:hover {
     box-shadow: 0 0 10px #cd7f32;
 }
 
-.add {
+.add-article {
     margin-right: 3%;
     padding: 5px;
     border-radius: 10px;
@@ -86,7 +86,7 @@ header {
     text-align: center;
 }
 
-.logout {
+.login-logout {
     padding: 5px;
     border-radius: 10px;
     font: 20px/40px Georgia, sans-serif;
@@ -112,7 +112,7 @@ header {
     box-shadow: 0 0 10px 3px #cd7f32;
 }
 
-.news-header {
+.article-header {
     padding: 0.5%;
     color: #cd7f32;
     border-radius: 5px;
@@ -133,7 +133,7 @@ header {
     text-align: right;
 }
 
-.tags {
+.tag {
     width: 100%;
     margin-right: 10px;
     border-radius: 2px;
@@ -141,12 +141,11 @@ header {
     box-shadow: 0 0 1px #000000;
 }
 
-.news-actions {
+.article-actions {
     text-align: center;
 }
 
 .view-button {
-    margin-right: 20%;
     padding: 5px;
     border-radius: 10px;
     font: 18px/260% Georgia, sans-serif;
@@ -155,6 +154,8 @@ header {
 }
 
 .edit-button {
+    margin-right: 20%;
+    margin-left: 20%;
     padding: 5px;
     border-radius: 10px;
     font: 18px/260% Georgia, sans-serif;
@@ -163,7 +164,6 @@ header {
 }
 
 .delete-button {
-    margin-left: 20%;
     padding: 5px;
     border-radius: 10px;
     font: 18px/260% Georgia, sans-serif;
@@ -175,7 +175,7 @@ header {
 .filters {
     float: right;
     width: 21%;
-    height: 500px;
+    height: 400px;
     margin-top: 1%;
     color: #000000;
     border-radius: 10px;
@@ -195,8 +195,8 @@ header {
 .author-filter input,
 .date-filter input,
 .tags-filter input {
-    margin: 7px;
-    width: 50%;
+    margin-bottom: 10px;
+    width: 70%;
 }
 
 .confirm-filter {

@@ -10,13 +10,13 @@
 <body>
     <header>
         <span class = "feed">Лента новостей</span>
-        <div class = "actions">
-            <a class = "add" href = "#">Добавить новость</a>
-            <span class = "user">TTOJlTOPA</span>
-            <a class = "logout" href = "#">Выйти</a>
+        <div class = "header-actions">
+            <span class = "add-article-holder"></span>
+            <span class = "user">Гость</span>
+            <a class = "login-logout" href = "#">Войти</a>
         </div>
     </header>
-    <div class = "article-list"></div>
+    <div class = "article-list">Новости</div>
     <div class = "filters">
         <h1>Фильтры</h1>
         <div class = "author-filter">
@@ -47,25 +47,32 @@
         <a href = "#">10</a>
         <a href = "#">Вперёд</a>
     </div>
-    <template id = "news">
+    <template id = "template-article">
         <div class = "article" data-id = "id">
-            <div class = "news-header">
+            <div class = "article-header">
                 <h1 class = "title">Заголовок</h1>
                 <div class = "author">Автор</div>
-                <div class = "date">20.03.2015 14:21</div>
-                <span class = "tags"></span>
-                <span class = "tags"></span>
-                <span class = "tags"></span>
-                <span class = "tags"></span>
-                <span class = "tags"></span>
+                <div class = "date">Дата</div>
+                <div class = "tag-list">Список тегов</div>
             </div>
             <p class = "summary">Текст</p>
-            <div class = "news-actions">
-                <a class = "view-button" href = "#">Показать новость</a>
-                <a class = "edit-button" href = "#">Редактировать</a>
-                <a class = "delete-button" href = "#">Удалить</a>
-            </div>
+            <div class = "article-actions"></div>
         </div>
+    </template>
+    <template id = "template-tag">
+        <span class = "tag">Тег</span>
+    </template>
+    <template id = "template-add-article">
+        <a class = "add-article" href = "#">Добавить новость</a>
+    </template>
+    <template id = "template-view-button">
+        <a class = "view-button" href = "#">Показать новость</a>
+    </template>
+    <template id = "template-edit-button">
+        <a class = "edit-button" href = "#">Редактировать</a>
+    </template>
+    <template id = "template-delete-button">
+        <a class = "delete-button" href = "#">Удалить</a>
     </template>
     <footer>Новостной портал. Жук Валерий 2 курс 6 группа. fpm.zhukVV@bsu.by. 26.02.2017</footer>
 </body>

@@ -1,3 +1,4 @@
+let user = "TTOJlTOPA" || null;
 let articlesService = (function () {
     let articles = [
         {
@@ -1146,27 +1147,119 @@ let articlesService = (function () {
     };
 }());
 
+let articlesLogic = (function () {
+    const USER_NAME = document.querySelector(".user");
+    const HEADER_ACTIONS = document.querySelector(".header-actions");
+    const ARTICLE_TEMPLATE = document.querySelector("#template-article");
+    const ARTICLE_LIST = document.querySelector(".article-list");
+    const TAG_TEMPLATE = document.querySelector("#template-tag");
+    const TAG_LIST = ARTICLE_TEMPLATE.content.querySelector(".tag-list");
+
+    function appendArticles(articles) {
+        createArticles(articles).forEach(function (article) {
+            ARTICLE_LIST.appendChild(article);
+        });
+    }
+
+    function createArticles(articles) {
+        return articles.map(function (article) {
+            return createArticle(article);
+        });
+    }
+
+    function createArticle(article) {
+        const ARTICLE_ACTIONS = ARTICLE_TEMPLATE.content.querySelector(".article-actions");
+        const VIEW_BUTTON = document.querySelector("#template-view-button");
+        const EDIT_BUTTON = document.querySelector("#template-edit-button");
+        const DELETE_BUTTON = document.querySelector("#template-delete-button");
+        TAG_LIST.innerHTML = "";
+        ARTICLE_ACTIONS.innerHTML = "";
+        ARTICLE_TEMPLATE.content.querySelector(".article").dataset.id = article.id;
+        ARTICLE_TEMPLATE.content.querySelector(".title").textContent = article.title;
+        ARTICLE_TEMPLATE.content.querySelector(".author").textContent = article.author;
+        ARTICLE_TEMPLATE.content.querySelector(".date").textContent = dateToString(article.createdAt);
+        ARTICLE_TEMPLATE.content.querySelector(".summary").textContent = article.summary;
+        article.tags.forEach(function (tag) {
+            TAG_TEMPLATE.content.querySelector(".tag").textContent = tag;
+            TAG_LIST.appendChild(TAG_TEMPLATE.content.querySelector(".tag").cloneNode(true));
+        });
+        ARTICLE_ACTIONS.appendChild(VIEW_BUTTON.content.querySelector(".view-button").cloneNode(true));
+        if (user != null) {
+            ARTICLE_ACTIONS.appendChild(EDIT_BUTTON.content.querySelector(".edit-button").cloneNode(true));
+            ARTICLE_ACTIONS.appendChild(DELETE_BUTTON.content.querySelector(".delete-button").cloneNode(true));
+        }
+        return ARTICLE_TEMPLATE.content.querySelector(".article").cloneNode(true);
+    }
+
+    function dateToString(date) {
+        return date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear() + " " + date.getHours() + ":" +
+            date.getMinutes();
+    }
+    
+    function removeArticlesAll() {
+        ARTICLE_LIST.innerHTML = "";
+    }
+    
+    function headerConfig() {
+        const ADD_ARTICLE_TEMPLATE = document.querySelector("#template-add-article");
+        const ADD_ARTICLE_HOLDER = HEADER_ACTIONS.querySelector(".add-article-holder");
+        if (user == null) {
+            USER_NAME.textContent = "Гость";
+            HEADER_ACTIONS.querySelector(".login-logout").textContent = "Войти";
+        } else {
+            ADD_ARTICLE_HOLDER.appendChild(ADD_ARTICLE_TEMPLATE.content.querySelector(".add-article").cloneNode(true));
+            USER_NAME.textContent = user;
+            HEADER_ACTIONS.querySelector(".login-logout").textContent = "Выйти";
+        }
+    }
+
+    return {
+        appendArticles: appendArticles,
+        removeArticlesAll: removeArticlesAll,
+        headerConfig: headerConfig
+    };
+}());
+
+document.addEventListener("FeedLoader", loadFeed());
+
+function loadFeed() {
+    articlesLogic.headerConfig();
+    appendArticles();
+}
+
+function appendArticles(from, to) {
+    articlesLogic.removeArticlesAll();
+    articlesLogic.appendArticles(articlesService.getArticles(from, to));
+}
+
+function addArticle(article) {
+    articlesService.addArticle(article);
+    appendArticles();
+}
+
+function removeArticle(id) {
+    articlesService.removeArticle(id);
+    appendArticles();
+}
+
+function editArticle(id, article) {
+    articlesService.editArticle(id, article);
+    appendArticles();
+}
+
 let testArticle1 = {
     id: "21",
-    title: "asssssssssfdsfsdfsd",
-    summary: "dsfsdfsdfsdfds",
+    title: "testAdd",
+    summary: "testAdd",
     createdAt: new Date(),
-    author: "dfdsfs",
+    author: "Test",
     tags: ["авария", "JDK 10", "java"],
-    content: "sdfsdfsdfsdf"
+    content: "test"
 };
 let testArticle2 = {
-    summary: "aaaaaaaaa",
+    title: "testEdit",
+    summary: "testEdit",
     tags: ["java", "ии"]
-};
-let testArticle3 = {
-    id: "24",
-    title: "dsfsd",
-    summary: "qwefa",
-    createdAt: new Date(),
-    author: "zxc",
-    tags: ["ccc", "JDK 10", "java"],
-    content: "sdfsdfsdfsdf"
 };
 let testFilter1 = {
     author: "alizar"
@@ -1188,66 +1281,6 @@ let testFilter5 = {
     author: "asdas"
 };
 
-let articlesLogic = (function () {
-    let articleTemplate;
-    let news;
-
-    function init() {
-        articleTemplate = document.querySelector("#news");
-        news = document.querySelector(".article-list");
-    }
-
-    function appendArticles(articles) {
-        createArticles(articles).forEach(function (article) {
-            news.appendChild(article);
-        });
-    }
-
-    function createArticles(articles) {
-        return articles.map(function (article) {
-            return createArticle(article);
-        });
-    }
-
-    function createArticle(article) {
-        let template = articleTemplate;
-        let tags;
-        template.content.querySelector(".article").dataset.id = article.id;
-        template.content.querySelector(".title").textContent = article.title;
-        template.content.querySelector(".author").textContent = article.author;
-        template.content.querySelector(".date").textContent = dateToString(article.createdAt);
-        template.content.querySelector(".summary").textContent = article.summary;
-        tags = template.content.querySelectorAll(".tags");
-        for (let i = 0; i < 5; i++) {
-            tags[i].textContent = article.tags[i];
-        }
-        return template.content.querySelector(".article").cloneNode(true);
-    }
-
-    function dateToString(date) {
-        return date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear() + " " + date.getHours() + ":" +
-            date.getMinutes();
-    }
-    
-    function removeArticlesAll() {
-        news.innerHTML = "";
-    }
-
-    return {
-        init: init,
-        appendArticles: appendArticles,
-        removeArticlesAll: removeArticlesAll
-    };
-}());
-
-document.addEventListener("FeedLoader", loadFeed());
-
-function loadFeed() {
-    articlesLogic.init();
-    appendArticles();
-}
-
-function appendArticles(from, to) {
-    articlesLogic.removeArticlesAll();
-    articlesLogic.appendArticles(articlesService.getArticles(from, to));
-}
+addArticle(testArticle1);
+editArticle(21, testArticle2);
+removeArticle(21);
