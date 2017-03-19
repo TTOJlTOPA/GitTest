@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Новостной портал</title>
+    <link rel="icon" type="image/png" href="images/logo.png"/>
+    <link href="styles.css" rel="stylesheet"/>
+    <script src="view.js" async></script>
+</head>
+<body>
+    <header>
+        <span class="feed">Просмотр новости</span>
+        <div class="header-actions">
+            <span class="add-article-holder"></span>
+            <span class="user">Гость</span>
+            <span class="login-logout-holder"></span>
+        </div>
+    </header>
+    <div class="return-button-block">
+        <a class="return-button" href="index.html">Вернуться к ленте</a>
+    </div>
+    <div class="article-view" data-id="id">
+        <div class="article-header">
+            <h1 class="title">Заголовок</h1>
+            <div class="author">Автор</div>
+            <div class="date">Дата</div>
+            <div class="tag-list">Список тегов</div>
+        </div>
+        <p class="content">Текст</p>
+        <div class="article-actions"></div>
+    </div>
+    <template id="template-tag">
+        <span class="tag">Тег</span>
+    </template>
+    <template id="template-add-article">
+        <a class="add-article" href="edit.html">Добавить новость</a>
+    </template>
+    <template id="template-edit-button">
+        <a class="edit-button" href="edit.html">Редактировать</a>
+    </template>
+    <template id="template-delete-button">
+        <a class="delete-button" href="#">Удалить</a>
+    </template>
+    <template id="template-header-login-button">
+        <a class="login-logout-button" href="authorization.html">Войти</a>
+    </template>
+    <template id="template-header-logout-button">
+        <a class="login-logout-button" href="view.html">Выйти</a>
+    </template>
+    <footer>Новостной портал. Жук Валерий 2 курс 6 группа. fpm.zhukVV@bsu.by. 26.02.2017</footer>
+</body>
+</html>
