@@ -16,27 +16,31 @@
             <span class="login-logout-holder"></span>
         </div>
     </header>
-    <div class="article-list"></div>
-    <div class="filters">
-        <h1>Фильтры</h1>
-        <div class="author-filter">
-            <h2>По автору:</h2>
-            <input type="text" name="author-input" placeholder="Автор">
+    <div class="dynamic-block"></div>
+    <template id="template-article-list">
+        <div class="article-list"></div>
+    </template>
+    <template id="template-filters">
+        <div class="filters">
+            <h1>Фильтры</h1>
+            <div class="author-filter">
+                <h2>По автору:</h2>
+                <input type="text" name="author-input" placeholder="Автор">
+            </div>
+            <div class="date-filter">
+                <h2>По дате добавления:</h2>
+                <h3>С:</h3>
+                <input type="date" name="date-from">
+                <h3>По:</h3>
+                <input type="date" name="date-to">
+            </div>
+            <div class="tags-filter">
+                <h2>По тегам:</h2>
+                <input type="text" name="tagsInput" placeholder="Тег">
+            </div>
+            <a class="confirm-filter" href="index.html">Применить</a>
         </div>
-        <div class="date-filter">
-            <h2>По дате добавления:</h2>
-            <h3>С:</h3>
-            <input type="date" name="date-from">
-            <h3>По:</h3>
-            <input type="date" name="date-to">
-        </div>
-        <div class="tags-filter">
-            <h2>По тегам:</h2>
-            <input type="text" name="tagsInput" placeholder="Тег">
-        </div>
-        <a class="confirm-filter" href="index.html">Применить</a>
-    </div>
-    <div class="paginator"></div>
+    </template>
     <template id="template-article">
         <div class="article" data-id="id">
             <div class="article-header">
@@ -46,20 +50,24 @@
                 <div class="tag-list">Список тегов</div>
             </div>
             <p class="summary">Текст</p>
+            <div class="content-block"></div>
             <div class="article-actions"></div>
         </div>
+    </template>
+    <template id="template-content">
+        <p class="content">Текст</p>
     </template>
     <template id="template-tag">
         <span class="tag">Тег</span>
     </template>
     <template id="template-add-article">
-        <a class="add-article" href="edit.html">Добавить новость</a>
+        <a class="add-article" href="#">Добавить новость</a>
     </template>
     <template id="template-view-button">
-        <a class="view-button" href="view.html">Показать новость</a>
+        <a class="view-button" href="#">Показать новость</a>
     </template>
     <template id="template-edit-button">
-        <a class="edit-button" href="edit.html">Редактировать</a>
+        <a class="edit-button" href="#">Редактировать</a>
     </template>
     <template id="template-delete-button">
         <a class="delete-button" href="#">Удалить</a>
@@ -70,11 +78,30 @@
     <template id="template-header-logout-button">
         <a class="login-logout-button" href="index.html">Выйти</a>
     </template>
+    <template id="template-paginator">
+        <div class="paginator"></div>
+    </template>
     <template id="template-pagination-next-button">
-        <a class="pagination-next-button" href="index.html">Далее&raquo;</a>
+        <a class="pagination-next-button" href="#">Далее&raquo;</a>
     </template>
     <template id="template-pagination-prev-button">
-        <a class="pagination-prev-button" href="index.html">&laquo;Назад</a>
+        <a class="pagination-prev-button" href="#">&laquo;Назад</a>
+    </template>
+    <template id="template-return-button">
+        <div class="return-button-block">
+            <a class="return-button" href="#">Вернуться к ленте</a>
+        </div>
+    </template>
+    <template id="template-authorization-input-block">
+        <form class="authorization-input-block" name="authorization-input">
+            <input type="text" name="login-input" placeholder="Логин">
+            <input type="password" name="password-input" placeholder="Пароль">
+        </form>
+    </template>
+    <template id="template-login-button">
+        <div class="login-button-block">
+            <a class="login-button" href="index.html">Войти</a>
+        </div>
     </template>
     <footer>Новостной портал. Жук Валерий 2 курс 6 группа. fpm.zhukVV@bsu.by. 26.02.2017</footer>
 </body>

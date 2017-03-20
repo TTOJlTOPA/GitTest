@@ -1,6 +1,6 @@
 const user = JSON.parse(localStorage.getItem("user"));
-let ARTICLES_INDEX_FROM = JSON.parse(sessionStorage.getItem("from")) || 0;
-let ARTICLES_INDEX_TO = JSON.parse(sessionStorage.getItem("to")) || 10;
+let ARTICLES_INDEX_FROM = JSON.parse(localStorage.getItem("from")) || 0;
+let ARTICLES_INDEX_TO = JSON.parse(localStorage.getItem("to")) || 10;
 
 let articlesService = (function () {
     let articles = JSON.parse(localStorage.getItem("articles"), function (key, value) {
@@ -146,16 +146,36 @@ let articlesService = (function () {
 let articlesLogic = (function () {
     const USER_NAME = document.querySelector(".user");
     const HEADER_ACTIONS = document.querySelector(".header-actions");
+    const DYNAMIC_BLOCK = document.querySelector(".dynamic-block");
+    const ARTICLE_LIST_TEMPLATE = document.querySelector("#template-article-list");
     const ARTICLE_TEMPLATE = document.querySelector("#template-article");
-    const ARTICLE_LIST = document.querySelector(".article-list");
     const TAG_TEMPLATE = document.querySelector("#template-tag");
     const TAG_LIST = ARTICLE_TEMPLATE.content.querySelector(".tag-list");
+    const FILTERS_TEMPLATE = document.querySelector("#template-filters");
+    const PAGINATOR_TEMPLATE = document.querySelector("#template-paginator");
+    const NEXT_BUTTON_TEMPLATE = document.querySelector("#template-pagination-next-button");
+    const PREV_BUTTON_TEMPLATE = document.querySelector("#template-pagination-prev-button");
+    let ARTICLE_LIST;
+    let PAGINATOR;
 
     function appendArticles(articles) {
+        document.querySelector(".feed").textContent = "Лента новостей";
+        DYNAMIC_BLOCK.appendChild(ARTICLE_LIST_TEMPLATE.content.querySelector(".article-list").cloneNode(true));
+        ARTICLE_LIST = document.querySelector(".article-list");
         createArticles(articles).forEach(function (article) {
             ARTICLE_LIST.appendChild(article);
         });
-
+        ARTICLE_LIST.addEventListener("click", handleArticleListButtonClick);
+        DYNAMIC_BLOCK.appendChild(FILTERS_TEMPLATE.content.querySelector(".filters").cloneNode(true));
+        DYNAMIC_BLOCK.appendChild(PAGINATOR_TEMPLATE.content.querySelector(".paginator").cloneNode(true));
+        PAGINATOR = document.querySelector(".paginator");
+        if (articlesService.numberOfArticles() > ARTICLES_INDEX_TO) {
+            PAGINATOR.appendChild(NEXT_BUTTON_TEMPLATE.content.querySelector(".pagination-next-button").cloneNode(true));
+        }
+        if (ARTICLES_INDEX_FROM > 0) {
+            PAGINATOR.appendChild(PREV_BUTTON_TEMPLATE.content.querySelector(".pagination-prev-button").cloneNode(true));
+        }
+        PAGINATOR.addEventListener("click", handlePaginatorClick);
     }
 
     function createArticles(articles) {
@@ -176,6 +196,7 @@ let articlesLogic = (function () {
         ARTICLE_TEMPLATE.content.querySelector(".author").textContent = article.author;
         ARTICLE_TEMPLATE.content.querySelector(".date").textContent = dateToString(article.createdAt);
         ARTICLE_TEMPLATE.content.querySelector(".summary").textContent = article.summary;
+        ARTICLE_TEMPLATE.content.querySelector(".content-block").innerHTML = "";
         article.tags.forEach(function (tag) {
             TAG_TEMPLATE.content.querySelector(".tag").textContent = tag;
             TAG_LIST.appendChild(TAG_TEMPLATE.content.querySelector(".tag").cloneNode(true));
@@ -193,10 +214,6 @@ let articlesLogic = (function () {
     function dateToString(date) {
         return date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear() + " " + date.getHours() + ":" +
             date.getMinutes();
-    }
-
-    function removeArticlesAll() {
-        ARTICLE_LIST.innerHTML = "";
     }
 
     function headerConfig() {
@@ -219,12 +236,93 @@ let articlesLogic = (function () {
 
     return {
         appendArticles: appendArticles,
-        removeArticlesAll: removeArticlesAll,
         headerConfig: headerConfig
     };
 }());
 
+let articleView = (function () {
+    const DYNAMIC_BLOCK = document.querySelector(".dynamic-block");
+    const ARTICLE_TEMPLATE = document.querySelector("#template-article");
+    const TAG_TEMPLATE = document.querySelector("#template-tag");
+    const TAG_LIST = ARTICLE_TEMPLATE.content.querySelector(".tag-list");
+    const RETURN_BUTTON_TEMPLATE = document.querySelector("#template-return-button");
+
+    function loadArticle() {
+        let article;
+        DYNAMIC_BLOCK.innerHTML = "";
+        document.querySelector(".feed").textContent = "Просмотр новости";
+        DYNAMIC_BLOCK.appendChild(RETURN_BUTTON_TEMPLATE.content.querySelector(".return-button-block").cloneNode(true));
+        article = createArticle();
+        article.className = "article-view";
+        console.log(article.className);
+        console.log(DYNAMIC_BLOCK.className);
+        DYNAMIC_BLOCK.appendChild(article);
+        document.querySelector(".return-button-block").addEventListener("click", handleReturnButtonClick);
+    }
+
+    function createArticle() {
+        const ARTICLE_ACTIONS = ARTICLE_TEMPLATE.content.querySelector(".article-actions");
+        const ARTICLE_CONTENT_BLOCK = ARTICLE_TEMPLATE.content.querySelector(".content-block");
+        const EDIT_BUTTON_TEMPLATE = document.querySelector("#template-edit-button");
+        const DELETE_BUTTON_TEMPLATE = document.querySelector("#template-delete-button");
+        const ARTICLE_CONTENT_TEMPLATE = document.querySelector("#template-content");
+        let article = articlesService.getArticle(JSON.parse(localStorage.getItem("articleID")));
+        TAG_LIST.innerHTML = "";
+        ARTICLE_ACTIONS.innerHTML = "";
+        ARTICLE_CONTENT_BLOCK.innerHTML = "";
+        ARTICLE_TEMPLATE.content.querySelector(".article").dataset.id = article.id;
+        ARTICLE_TEMPLATE.content.querySelector(".title").textContent = article.title;
+        ARTICLE_TEMPLATE.content.querySelector(".author").textContent = article.author;
+        ARTICLE_TEMPLATE.content.querySelector(".date").textContent = dateToString(article.createdAt);
+        ARTICLE_TEMPLATE.content.querySelector(".summary").textContent = "";
+        ARTICLE_CONTENT_TEMPLATE.content.querySelector(".content").textContent = article.content;
+        ARTICLE_CONTENT_BLOCK.appendChild(ARTICLE_CONTENT_TEMPLATE.content.querySelector(".content").cloneNode(true));
+        article.tags.forEach(function (tag) {
+            TAG_TEMPLATE.content.querySelector(".tag").textContent = tag;
+            TAG_LIST.appendChild(TAG_TEMPLATE.content.querySelector(".tag").cloneNode(true));
+        });
+        if (user != null) {
+            ARTICLE_ACTIONS.appendChild(EDIT_BUTTON_TEMPLATE.content.querySelector(".edit-button").cloneNode(true));
+            ARTICLE_ACTIONS.appendChild(DELETE_BUTTON_TEMPLATE.content.querySelector(".delete-button").cloneNode(true));
+        }
+        return ARTICLE_TEMPLATE.content.querySelector(".article").cloneNode(true);
+    }
+
+    function dateToString(date) {
+        return date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear() + " " + date.getHours() + ":" +
+            date.getMinutes();
+    }
+
+    return {
+        loadArticle: loadArticle
+    };
+}());
+
+let authorizationForm = (function () {
+    const DYNAMIC_BLOCK = document.querySelector(".dynamic-block");
+    const RETURN_BUTTON_TEMPLATE = document.querySelector("#template-return-button");
+    const AUTHORIZATION_INPUT_TEMPLATE = document.querySelector("#template-authorization-input-block");
+    const LOGIN_BUTTON_TEMPLATE = document.querySelector("#template-login-button");
+
+    function loadForm() {
+        DYNAMIC_BLOCK.innerHTML = "";
+        document.querySelector(".feed").textContent = "Авторизация";
+        DYNAMIC_BLOCK.appendChild(RETURN_BUTTON_TEMPLATE.content.querySelector(".return-button-block").cloneNode(true));
+        document.querySelector(".return-button-block").addEventListener("click", handleReturnButtonClick);
+        DYNAMIC_BLOCK.appendChild(AUTHORIZATION_INPUT_TEMPLATE.content.querySelector(".authorization-input-block").cloneNode(true));
+        DYNAMIC_BLOCK.appendChild(LOGIN_BUTTON_TEMPLATE.content.querySelector(".login-button-block").cloneNode(true));
+        document.querySelector(".authorization-input-block").addEventListener("input", handleAuthorizationInput);
+        document.querySelector(".login-button-block").addEventListener("click", handleLoginButtonClick);
+    }
+
+    return {
+        loadForm: loadForm
+    };
+}());
+
 document.addEventListener("FeedLoader", loadFeed());
+
+document.querySelector(".login-logout-button").addEventListener("click", handleLoginLogoutClick);
 
 function loadFeed() {
     articlesLogic.headerConfig();
@@ -232,49 +330,49 @@ function loadFeed() {
 }
 
 function appendArticles(from, to) {
-    const PAGINATOR = document.querySelector(".paginator");
-    const NEXT_BUTTON_TEMPLATE = document.querySelector("#template-pagination-next-button");
-    const PREV_BUTTON_TEMPLATE = document.querySelector("#template-pagination-prev-button");
-    PAGINATOR.innerHTML = "";
-    articlesLogic.removeArticlesAll();
+    document.querySelector(".dynamic-block").innerHTML = "";
     articlesLogic.appendArticles(articlesService.getArticles(from, to));
-    if (articlesService.numberOfArticles() > ARTICLES_INDEX_TO) {
-        PAGINATOR.appendChild(NEXT_BUTTON_TEMPLATE.content.querySelector(".pagination-next-button").cloneNode(true))
-    }
-    if (ARTICLES_INDEX_FROM > 0) {
-        PAGINATOR.appendChild(PREV_BUTTON_TEMPLATE.content.querySelector(".pagination-prev-button").cloneNode(true))
-    }
 }
 
-let articlesList = document.querySelector(".article-list");
-articlesList.addEventListener("click", handleButtonClick);
+function handleReturnButtonClick() {
+    appendArticles(ARTICLES_INDEX_FROM, ARTICLES_INDEX_TO);
+}
 
-function handleButtonClick(event) {
+function handleArticleListButtonClick(event) {
     if (event.target.textContent == "Показать новость") {
-        localStorage.setItem("article", JSON.stringify(articlesService.getArticle(event.target.parentNode.parentNode.dataset.id)));
-        return;
+        localStorage.setItem("articleID", JSON.stringify(event.target.parentNode.parentNode.dataset.id));
+        articleView.loadArticle();
     }
 }
-
-let loginLogout = document.querySelector(".login-logout-button");
-loginLogout.addEventListener("click", handleLoginLogoutClick);
 
 function handleLoginLogoutClick() {
     if(user != null) {
         localStorage.setItem("user", JSON.stringify(null));
+        document.querySelector(".user").innerHTML = "Гость";
+    } else {
+        authorizationForm.loadForm();
     }
 }
 
-let paginatorButtons = document.querySelector(".paginator");
-paginatorButtons.addEventListener("click", handlePaginatorClick);
-
 function handlePaginatorClick(event) {
     if (event.target.textContent.includes("Далее")) {
-        sessionStorage.setItem("from", JSON.stringify(ARTICLES_INDEX_FROM + 10));
-        sessionStorage.setItem("to", JSON.stringify(ARTICLES_INDEX_TO + 10));
+        ARTICLES_INDEX_FROM += 10;
+        ARTICLES_INDEX_TO += 10;
     }
     if (event.target.textContent.includes("Назад")) {
-        sessionStorage.setItem("from", JSON.stringify(ARTICLES_INDEX_FROM - 10));
-        sessionStorage.setItem("to", JSON.stringify(ARTICLES_INDEX_TO - 10));
+        ARTICLES_INDEX_FROM -= 10;
+        ARTICLES_INDEX_TO -= 10;
     }
+    localStorage.setItem("from", JSON.stringify(ARTICLES_INDEX_FROM));
+    localStorage.setItem("to", JSON.stringify(ARTICLES_INDEX_TO));
+    appendArticles(ARTICLES_INDEX_FROM, ARTICLES_INDEX_TO);
+}
+
+function handleAuthorizationInput() {
+    localStorage.setItem("user", JSON.stringify(document.forms[0].elements[0].value));
+    appendArticles(ARTICLES_INDEX_FROM, ARTICLES_INDEX_TO);
+}
+
+function handleLoginButtonClick() {
+    appendArticles(ARTICLES_INDEX_FROM, ARTICLES_INDEX_TO);
 }
