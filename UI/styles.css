@@ -17,6 +17,7 @@ legend, table, caption, tbody, tfoot, thead, tr, th, td, header, nav, article, a
 html {
     background-color: rgb(237, 231, 222);
     height: 100%;
+    width: 100%;
 }
 
 body {
@@ -44,6 +45,14 @@ h2 {
 
 h3 {
     font: 16px/18px Georgia, sans-serif;
+}
+
+h4 {
+    font: 20px/20px Georgia, sans-serif;
+}
+
+textarea {
+    resize: none;
 }
 
 /* Header */
@@ -136,11 +145,15 @@ header {
 }
 
 .tag {
-    width: 100%;
     margin-right: 10px;
+    width: 100%;
     border-radius: 2px;
-    font: 15px/20px Georgia, sans-serif;
+    font: 15px/25px Georgia, sans-serif;
     box-shadow: 0 0 1px #000000;
+}
+
+.tag-holder {
+    display: inline;
 }
 
 .article-actions {
@@ -295,6 +308,75 @@ header {
     background-color: #e0dbd2;
     border-radius: 5px;
     box-shadow: 0 0 5px #000000;
+}
+
+/* Edit */
+.fixed-fields-block {
+    margin-left: 2%;
+    margin-right: 2%;
+    font: 25px/25px Georgia, sans-serif;
+    text-align: center;
+}
+
+.title-edit-block {
+    margin: 2% 2% 1%;
+}
+
+.title-edit-block textarea,
+.summary-edit-block textarea,
+.content-edit-block textarea {
+    width: 100%;
+    margin-top: 5px;
+}
+
+.existent-tags,
+.add-tag,
+.summary-edit-block,
+.content-edit-block {
+    margin: 1% 2% 1%;
+}
+
+.existent-tags-list {
+    min-height: 15px;
+}
+
+.add-tag a:hover {
+    box-shadow: 0 0 10px 1px #cd7f32;
+}
+
+.add-tag-button {
+    margin-left: 1%;
+    margin-bottom: 10%;
+    padding: 5px;
+    border-radius: 10px;
+    font: 14px/14px Georgia, sans-serif;
+    text-align: center;
+    background-color: #3a3733;
+}
+
+.add-article-button-block {
+    margin: 1% 2% 5%;
+}
+
+.add-article-button-block a:hover {
+    box-shadow: 0 0 10px 1px #cd7f32;
+}
+
+.add-article-button {
+    padding: 5px;
+    border-radius: 10px;
+    font: 18px/18px Georgia, sans-serif;
+    text-align: center;
+    background-color: #3a3733;
+}
+
+.chosen-tag {
+    margin-right: 10px;
+    width: 100%;
+    border-radius: 2px;
+    font: 15px/25px Georgia, sans-serif;
+    box-shadow: 0 0 1px #000000;
+    background-color: #3a3733;
 }
 
 /* Error */
