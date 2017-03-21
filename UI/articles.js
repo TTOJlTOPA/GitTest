@@ -1,4 +1,4 @@
-const user = JSON.parse(localStorage.getItem("user"));
+let user = JSON.parse(localStorage.getItem("user"));
 let ARTICLES_INDEX_FROM = JSON.parse(localStorage.getItem("from")) || 0;
 let ARTICLES_INDEX_TO = JSON.parse(localStorage.getItem("to")) || 10;
 
@@ -218,19 +218,16 @@ let articlesLogic = (function () {
 
     function headerConfig() {
         const ADD_ARTICLE_TEMPLATE = document.querySelector("#template-add-article");
-        const LOGIN_BUTTON_TEMPLATE = document.querySelector("#template-header-login-button");
-        const LOGOUT_BUTTON_TEMPLATE = document.querySelector("#template-header-logout-button");
         const ADD_ARTICLE_HOLDER = HEADER_ACTIONS.querySelector(".add-article-holder");
-        const LOGIN_LOGOUT_HOLDER = HEADER_ACTIONS.querySelector(".login-logout-holder");
+        const LOGIN_LOGOUT_BUTTON = HEADER_ACTIONS.querySelector(".login-logout-button");
         ADD_ARTICLE_HOLDER.innerHTML = "";
-        LOGIN_LOGOUT_HOLDER.innerHTML = "";
         if (user == null) {
             USER_NAME.textContent = "Гость";
-            LOGIN_LOGOUT_HOLDER.appendChild(LOGIN_BUTTON_TEMPLATE.content.querySelector(".login-logout-button").cloneNode(true));
+            LOGIN_LOGOUT_BUTTON.textContent = "Войти";
         } else {
             ADD_ARTICLE_HOLDER.appendChild(ADD_ARTICLE_TEMPLATE.content.querySelector(".add-article").cloneNode(true));
             USER_NAME.textContent = user;
-            LOGIN_LOGOUT_HOLDER.appendChild(LOGOUT_BUTTON_TEMPLATE.content.querySelector(".login-logout-button").cloneNode(true));
+            LOGIN_LOGOUT_BUTTON.textContent = "Выйти";
         }
     }
 
@@ -254,8 +251,6 @@ let articleView = (function () {
         DYNAMIC_BLOCK.appendChild(RETURN_BUTTON_TEMPLATE.content.querySelector(".return-button-block").cloneNode(true));
         article = createArticle();
         article.className = "article-view";
-        console.log(article.className);
-        console.log(DYNAMIC_BLOCK.className);
         DYNAMIC_BLOCK.appendChild(article);
         document.querySelector(".return-button-block").addEventListener("click", handleReturnButtonClick);
     }
@@ -331,6 +326,7 @@ function loadFeed() {
 
 function appendArticles(from, to) {
     document.querySelector(".dynamic-block").innerHTML = "";
+    articlesLogic.headerConfig();
     articlesLogic.appendArticles(articlesService.getArticles(from, to));
 }
 
@@ -345,10 +341,11 @@ function handleArticleListButtonClick(event) {
     }
 }
 
-function handleLoginLogoutClick() {
-    if(user != null) {
-        localStorage.setItem("user", JSON.stringify(null));
-        document.querySelector(".user").innerHTML = "Гость";
+function handleLoginLogoutClick(event) {
+    if(event.target.textContent == "Выйти") {
+        user = null;
+        localStorage.setItem("user", null);
+        appendArticles(ARTICLES_INDEX_FROM, ARTICLES_INDEX_TO);
     } else {
         authorizationForm.loadForm();
     }
@@ -369,8 +366,8 @@ function handlePaginatorClick(event) {
 }
 
 function handleAuthorizationInput() {
-    localStorage.setItem("user", JSON.stringify(document.forms[0].elements[0].value));
-    appendArticles(ARTICLES_INDEX_FROM, ARTICLES_INDEX_TO);
+    user = document.forms[0].elements[0].value;
+    localStorage.setItem("user", JSON.stringify(user));
 }
 
 function handleLoginButtonClick() {

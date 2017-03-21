@@ -262,7 +262,8 @@ header {
 .login-button-block {
     margin-top: 1%;
     margin-left: 2%;
-    min-height: 85%;
+    margin-bottom: 70%;
+    min-height: 100%;
 }
 
 .login-button-block a:hover {
