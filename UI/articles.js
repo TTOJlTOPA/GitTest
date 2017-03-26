@@ -1,33 +1,35 @@
-let user = JSON.parse(sessionStorage.getItem("user")) || null;
+let user = JSON.parse(sessionStorage.getItem("user"));
 let ARTICLES_INDEX_FROM = 0;
 let ARTICLES_INDEX_TO = 10;
 
 let articlesService = (function () {
     let articles = JSON.parse(localStorage.getItem("articles"), function (key, value) {
-        if (key == 'createdAt') {
+        if (key == "createdAt") {
             return new Date(value);
         }
         return value;
     });
-
     let tags = JSON.parse(localStorage.getItem("tags"));
 
     function getArticles(skip, top, filterConfig) {
         let result = articles;
         let from = skip || 0;
         let number = top || 10;
+        result = result.filter(function (element) {
+            return !element.isHidden;
+        });
         if (filterConfig != undefined) {
-            if (filterConfig.author != undefined) {
+            if (filterConfig.author != undefined && filterConfig.author != "") {
                 result = result.filter(function (element) {
                     return element.author == filterConfig.author;
                 })
             }
-            if (filterConfig.dateFrom != undefined) {
+            if (filterConfig.dateFrom != undefined && filterConfig.dateFrom != null) {
                 result = result.filter(function (element) {
                     return element.createdAt.getTime() >= filterConfig.dateFrom.getTime();
                 })
             }
-            if (filterConfig.dateTo != undefined) {
+            if (filterConfig.dateTo != undefined && filterConfig.dateTo != null) {
                 result = result.filter(function (element) {
                     return element.createdAt.getTime() <= filterConfig.dateTo.getTime();
                 })
@@ -43,6 +45,7 @@ let articlesService = (function () {
         result.sort(function (a, b) {
             return b.createdAt.getTime() - a.createdAt.getTime();
         });
+        articles = result.slice(0, articles.length);
         return result.slice(from, from + number);
     }
 
@@ -81,6 +84,7 @@ let articlesService = (function () {
     function addArticle(article) {
         let prevSize = articles.length;
         let newSize;
+        resetArticles();
         if (!validateArticle(article)) {
             return false;
         } else {
@@ -96,6 +100,7 @@ let articlesService = (function () {
         let removeIndex = articles.findIndex(function (element) {
             return element.id == removeId;
         });
+        resetArticles();
         if (removeIndex != -1) {
             articles.splice(removeIndex, 1);
             localStorage.setItem("articles", JSON.stringify(articles));
@@ -109,6 +114,7 @@ let articlesService = (function () {
         let editIndex = articles.findIndex(function (element) {
             return element.id == editId;
         });
+        resetArticles();
         if (!validateArticle(article) || editIndex < 0) {
             return false;
         }
@@ -132,6 +138,32 @@ let articlesService = (function () {
         return articles.length;
     }
 
+    function resetArticles() {
+        ARTICLES_INDEX_FROM = 0;
+        ARTICLES_INDEX_TO = 10;
+        articles = JSON.parse(localStorage.getItem("articles"), function (key, value) {
+            if (key == 'createdAt') {
+                return new Date(value);
+            }
+            return value;
+        });
+        sessionStorage.removeItem("filters");
+    }
+
+    function hideArticle(id) {
+        let mainArticles = JSON.parse(localStorage.getItem("articles"));
+        let article = mainArticles.find(function (element) {
+            return element.id == id;
+        });
+        if (article != undefined) {
+            article.isHidden = true;
+        }
+        article = getArticle(id);
+        if (article != undefined) {
+            article.isHidden = true;
+        }
+    }
+
     return {
         getArticles: getArticles,
         getArticle: getArticle,
@@ -139,7 +171,9 @@ let articlesService = (function () {
         addArticle: addArticle,
         removeArticle: removeArticle,
         editArticle: editArticle,
-        numberOfArticles: numberOfArticles
+        numberOfArticles: numberOfArticles,
+        resetArticles: resetArticles,
+        hideArticle: hideArticle
     };
 }());
 
@@ -158,7 +192,7 @@ let articlesLogic = (function () {
     let ARTICLE_LIST;
     let PAGINATOR;
 
-    function appendArticles(articles) {
+    function loadArticles(articles) {
         articlesLogic.headerConfig();
         document.querySelector(".feed").textContent = "Лента новостей";
         DYNAMIC_BLOCK.appendChild(ARTICLE_LIST_TEMPLATE.content.querySelector(".article-list").cloneNode(true));
@@ -167,7 +201,7 @@ let articlesLogic = (function () {
             ARTICLE_LIST.appendChild(article);
         });
         ARTICLE_LIST.addEventListener("click", handleArticleListButtonClick);
-        DYNAMIC_BLOCK.appendChild(FILTERS_TEMPLATE.content.querySelector(".filters").cloneNode(true));
+        DYNAMIC_BLOCK.appendChild(appendFilters());
         DYNAMIC_BLOCK.appendChild(PAGINATOR_TEMPLATE.content.querySelector(".paginator").cloneNode(true));
         PAGINATOR = document.querySelector(".paginator");
         if (articlesService.numberOfArticles() > ARTICLES_INDEX_TO) {
@@ -177,6 +211,12 @@ let articlesLogic = (function () {
             PAGINATOR.appendChild(PREV_BUTTON_TEMPLATE.content.querySelector(".pagination-prev-button").cloneNode(true));
         }
         PAGINATOR.addEventListener("click", handlePaginatorClick);
+        document.querySelector(".add-tag-filter").addEventListener("click", handleTagAddFilterButtonClick);
+        document.querySelector(".confirm-filter").addEventListener("click", handleConfirmFilterButtonClick);
+        document.querySelector(".reset-filter").addEventListener("click", handleResetFilterButtonClick);
+        document.querySelectorAll(".chosen-tag").forEach(function (tag) {
+            tag.addEventListener("click", handleChosenTagClick);
+        });
     }
 
     function createArticles(articles) {
@@ -217,6 +257,62 @@ let articlesLogic = (function () {
             date.getMinutes();
     }
 
+    function dateInputToString(date) {
+        return date.getFullYear() + "-" + ((date.getMonth() + 1 > 9) ? date.getMonth() + 1 : "0" + (date.getMonth() + 1)) +
+            "-" + ((date.getDate() > 9) ? date.getDate() : "0" + date.getDate());
+    }
+
+    function appendFilters() {
+        const CHOSEN_TAG_TEMPLATE = document.querySelector("#template-chosen-tag");
+        const CHOSEN_TAGS_LIST = FILTERS_TEMPLATE.content.querySelector(".chosen-tags-list");
+        const AUTHORS_DATALIST = FILTERS_TEMPLATE.content.querySelector("#authors");
+        const TAGS_DATALIST = FILTERS_TEMPLATE.content.querySelector("#tags");
+        const OPTION_TEMPLATE = document.querySelector("#template-option");
+        let filters = JSON.parse(sessionStorage.getItem("filters"), function (key, value) {
+            if (key == "dateFrom" || key == "dateTo") {
+                return new Date(value);
+            }
+            return value;
+        });
+        let tags = JSON.parse(localStorage.getItem("tags"));
+        let authors = JSON.parse(localStorage.getItem("users")).map(function (user) {
+            return user.login;
+        });
+        CHOSEN_TAGS_LIST.innerHTML = "";
+        AUTHORS_DATALIST.innerHTML = "";
+        TAGS_DATALIST.innerHTML = "";
+        if (filters != null && filters != undefined) {
+            FILTERS_TEMPLATE.content.querySelector(".author-input").value = (filters.author != undefined) ? filters.author : "";
+            FILTERS_TEMPLATE.content.querySelector(".date-from").value = (filters.dateFrom != undefined && filters.dateFrom != null) ? dateInputToString(filters.dateFrom) : "";
+            FILTERS_TEMPLATE.content.querySelector(".date-to").value = (filters.dateTo != undefined && filters.dateTo != null) ? dateInputToString(filters.dateTo) : "";
+            FILTERS_TEMPLATE.content.querySelector(".tags-input").value = "";
+            if (filters.tags != undefined) {
+                filters.tags.forEach(function (tag) {
+                    CHOSEN_TAG_TEMPLATE.content.querySelector(".chosen-tag").textContent = tag;
+                    CHOSEN_TAGS_LIST.appendChild(CHOSEN_TAG_TEMPLATE.content.querySelector(".tag-holder").cloneNode(true));
+                });
+            }
+        } else {
+            FILTERS_TEMPLATE.content.querySelector(".author-input").value = "";
+            FILTERS_TEMPLATE.content.querySelector(".date-from").value = "";
+            FILTERS_TEMPLATE.content.querySelector(".date-to").value = "";
+            FILTERS_TEMPLATE.content.querySelector(".tags-input").value = "";
+        }
+        if (authors != undefined) {
+            authors.forEach(function (author) {
+                OPTION_TEMPLATE.content.querySelector(".option").value = author;
+                AUTHORS_DATALIST.appendChild(OPTION_TEMPLATE.content.querySelector(".option").cloneNode(true));
+            });
+        }
+        if (tags != undefined) {
+            tags.forEach(function (tag) {
+                OPTION_TEMPLATE.content.querySelector(".option").value = tag;
+                TAGS_DATALIST.appendChild(OPTION_TEMPLATE.content.querySelector(".option").cloneNode(true));
+            });
+        }
+        return FILTERS_TEMPLATE.content.querySelector(".filters").cloneNode(true);
+    }
+
     function headerConfig() {
         const ADD_ARTICLE_TEMPLATE = document.querySelector("#template-add-article");
         const ADD_ARTICLE_HOLDER = HEADER_ACTIONS.querySelector(".add-article-holder");
@@ -233,8 +329,88 @@ let articlesLogic = (function () {
         }
     }
 
+    function handleConfirmFilterButtonClick() {
+        let filters = JSON.parse(sessionStorage.getItem("filters"), function (key, value) {
+                if (key == "dateFrom" || key == "dateTo") {
+                    return new Date(value);
+                }
+                return value;
+            }) || {};
+        let buf;
+        filters.author = document.forms.filters.elements.authorInput.value;
+        buf = document.forms.filters.elements.dateFrom.value;
+        filters.dateFrom = (buf != "") ? new Date(buf) : undefined;
+        buf = document.forms.filters.elements.dateTo.value;
+        filters.dateTo = (buf != "") ? new Date(buf) : undefined;
+        sessionStorage.setItem("filters", JSON.stringify(filters));
+        ARTICLES_INDEX_FROM = 0;
+        ARTICLES_INDEX_TO = 10;
+        appendArticles(ARTICLES_INDEX_FROM, ARTICLES_INDEX_TO);
+    }
+
+    function handleTagAddFilterButtonClick() {
+        const CHOSEN_TAGS_LIST = document.querySelector(".chosen-tags-list");
+        const CHOSEN_TAG_TEMPLATE = document.querySelector("#template-chosen-tag");
+        let filters = JSON.parse(sessionStorage.getItem("filters"), function (key, value) {
+                if (key == "dateFrom" || key == "dateTo") {
+                    return new Date(value);
+                }
+                return value;
+            }) || {};
+        let tags = JSON.parse(localStorage.getItem("tags"));
+        let tag;
+        filters.tags = filters.tags || [];
+        tag = document.forms.filters.elements.tagsInput.value;
+        if (filters.tags.length < 5 && tags.indexOf(tag) != -1 && filters.tags.indexOf(tag) == -1) {
+            filters.tags.push(tag);
+            sessionStorage.setItem("filters", JSON.stringify(filters));
+            document.forms.filters.elements.tagsInput.value = "";
+            CHOSEN_TAGS_LIST.innerHTML = "";
+            filters.tags.forEach(function (tag) {
+                CHOSEN_TAG_TEMPLATE.content.querySelector(".chosen-tag").textContent = tag;
+                CHOSEN_TAGS_LIST.appendChild(CHOSEN_TAG_TEMPLATE.content.querySelector(".tag-holder").cloneNode(true));
+            });
+            document.querySelectorAll(".chosen-tag").forEach(function (tag) {
+                tag.addEventListener("click", handleChosenTagClick);
+            });
+        } else {
+            alert("Невозможно добавить тег!");
+        }
+    }
+
+    function handleChosenTagClick(event) {
+        const CHOSEN_TAGS_LIST = document.querySelector(".chosen-tags-list");
+        const CHOSEN_TAG_TEMPLATE = document.querySelector("#template-chosen-tag");
+        let filters = JSON.parse(sessionStorage.getItem("filters"), function (key, value) {
+            if (key == "dateFrom" || key == "dateTo") {
+                return new Date(value);
+            }
+            return value;
+        });
+        filters.tags.splice(filters.tags.indexOf(event.target.textContent), 1);
+        sessionStorage.setItem("filters", JSON.stringify(filters));
+        CHOSEN_TAGS_LIST.innerHTML = "";
+        if (filters.tags.length > 0) {
+            filters.tags.forEach(function (tag) {
+                CHOSEN_TAG_TEMPLATE.content.querySelector(".chosen-tag").textContent = tag;
+                CHOSEN_TAGS_LIST.appendChild(CHOSEN_TAG_TEMPLATE.content.querySelector(".tag-holder").cloneNode(true));
+            });
+            document.querySelectorAll(".chosen-tag").forEach(function (tag) {
+                tag.addEventListener("click", handleChosenTagClick);
+            });
+        }
+    }
+
+    function handleResetFilterButtonClick() {
+        ARTICLES_INDEX_FROM = 0;
+        ARTICLES_INDEX_TO = 10;
+        sessionStorage.removeItem("filters");
+        articlesService.resetArticles();
+        appendArticles(ARTICLES_INDEX_FROM, ARTICLES_INDEX_TO);
+    }
+
     return {
-        appendArticles: appendArticles,
+        appendArticles: loadArticles,
         headerConfig: headerConfig
     };
 }());
@@ -255,6 +431,8 @@ let articleView = (function () {
         article.className = "article-view";
         DYNAMIC_BLOCK.appendChild(article);
         document.querySelector(".return-button-block").addEventListener("click", handleReturnButtonClick);
+        document.querySelector(".edit-button").addEventListener("click", handleArticleEditButtonClick);
+        document.querySelector(".delete-button").addEventListener("click", handleArticleDeleteButtonClick);
     }
 
     function createArticle(id) {
@@ -288,6 +466,15 @@ let articleView = (function () {
     function dateToString(date) {
         return date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear() + " " + date.getHours() + ":" +
             date.getMinutes();
+    }
+
+    function handleArticleEditButtonClick() {
+        editForm.loadEditForm(document.querySelector(".article-view").dataset.id);
+    }
+
+    function handleArticleDeleteButtonClick() {
+        articlesService.hideArticle(document.querySelector(".article-view").dataset.id);
+        appendArticles(ARTICLES_INDEX_FROM, ARTICLES_INDEX_TO);
     }
 
     return {
@@ -439,6 +626,8 @@ let editForm = (function () {
             localStorage.setItem("tags", JSON.stringify(tags));
             document.querySelector("#tag-input").value = "";
             loadExistentTags(document);
+        } else if (tags.indexOf(document.querySelector("#tag-input").value) != -1) {
+            alert("Данный тег уже существует.");
         }
     }
 
@@ -452,8 +641,6 @@ let editForm = (function () {
     };
 }());
 
-articlesService.removeArticle(21);
-
 document.addEventListener("FeedLoader", appendArticles(ARTICLES_INDEX_FROM, ARTICLES_INDEX_TO));
 
 document.querySelector(".login-logout-button").addEventListener("click", handleLoginLogoutClick);
@@ -461,7 +648,12 @@ document.querySelector(".login-logout-button").addEventListener("click", handleL
 function appendArticles(from, to) {
     document.querySelector(".dynamic-block").innerHTML = "";
     articlesLogic.headerConfig();
-    articlesLogic.appendArticles(articlesService.getArticles(from, to));
+    articlesLogic.appendArticles(articlesService.getArticles(from, to, JSON.parse(sessionStorage.getItem("filters"), function (key, value) {
+        if (key == "dateFrom" || key == "dateTo") {
+            return new Date(value);
+        }
+        return value;
+    })));
 }
 
 function handleReturnButtonClick() {
@@ -474,6 +666,10 @@ function handleArticleListButtonClick(event) {
     }
     if (event.target.textContent == "Редактировать") {
         editForm.loadEditForm(event.target.parentNode.parentNode.dataset.id);
+    }
+    if (event.target.textContent == "Удалить") {
+        articlesService.hideArticle(event.target.parentNode.parentNode.dataset.id);
+        appendArticles(ARTICLES_INDEX_FROM, ARTICLES_INDEX_TO);
     }
 }
 

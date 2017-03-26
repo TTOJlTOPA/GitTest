@@ -22,23 +22,37 @@
     </template>
     <template id="template-filters">
         <div class="filters">
-            <h1>Фильтры</h1>
-            <div class="author-filter">
-                <h2>По автору:</h2>
-                <input type="text" name="author-input" placeholder="Автор">
-            </div>
-            <div class="date-filter">
-                <h2>По дате добавления:</h2>
-                <h3>С:</h3>
-                <input type="date" name="date-from">
-                <h3>По:</h3>
-                <input type="date" name="date-to">
-            </div>
-            <div class="tags-filter">
-                <h2>По тегам:</h2>
-                <input type="text" name="tagsInput" placeholder="Тег">
-            </div>
-            <a class="confirm-filter" href="index.html">Применить</a>
+            <form name="filters">
+                <h1>Фильтры</h1>
+                <div class="author-filter">
+                    <h2>По автору:</h2>
+                    <input type="text" class="author-input" name="authorInput" placeholder="Автор" list="authors">
+                    <datalist id="authors"></datalist>
+                </div>
+                <div class="date-filter">
+                    <h2>По дате добавления:</h2>
+                    <h3>С:</h3>
+                    <input type="date" class="date-from" name="dateFrom">
+                    <h3>По:</h3>
+                    <input type="date" class="date-to" name="dateTo">
+                </div>
+                <div class="tags-filter">
+                    <h2>По тегам:</h2>
+                    <input type="text" class="tags-input" name="tagsInput" placeholder="Тег" list="tags">
+                    <datalist id="tags"></datalist>
+                    <a class="add-tag-filter" href="#">+</a>
+                </div>
+                <div class="chosen-tags">
+                    <h2>Выбранные теги:</h2>
+                    <div class="chosen-tags-list"></div>
+                </div>
+                <div class="confirm-filter-holder">
+                    <a class="confirm-filter" href="#">Применить</a>
+                </div>
+                <div class="reset-filter-holder">
+                    <a class="reset-filter" href="#">Сбросить</a>
+                </div>
+            </form>
         </div>
     </template>
     <template id="template-article">
@@ -149,6 +163,9 @@
         <div class="tag-holder">
             <a class="chosen-tag" href="#">Тег</a>
         </div>
+    </template>
+    <template id="template-option">
+        <option class="option" value=""></option>
     </template>
     <footer>Новостной портал. Жук Валерий 2 курс 6 группа. fpm.zhukVV@bsu.by. 26.02.2017</footer>
 </body>
