@@ -1251,6 +1251,7 @@ let articlesService = (function () {
         if (article != undefined) {
             article.isHidden = true;
         }
+        localStorage.setItem("articles", JSON.stringify(mainArticles));
         article = getArticle(id);
         if (article != undefined) {
             article.isHidden = true;
