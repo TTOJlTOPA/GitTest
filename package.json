@@ -1,0 +1,24 @@
+{
+  "name": "practice",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TTOJlTOPA/GitTest.git"
+  },
+  "author": "TTOJlTOPA",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TTOJlTOPA/GitTest/issues"
+  },
+  "homepage": "https://github.com/TTOJlTOPA/GitTest#readme",
+  "dependencies": {
+    "express": "^4.15.2",
+    "node-static": "^0.7.9"
+  },
+  "devDependencies": {},
+  "description": ""
+}
