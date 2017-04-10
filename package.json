@@ -16,6 +16,7 @@
   },
   "homepage": "https://github.com/TTOJlTOPA/GitTest#readme",
   "dependencies": {
+    "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "node-static": "^0.7.9"
   },
