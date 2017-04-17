@@ -2,6 +2,7 @@
 .DS_Store/
 .idea/
 out/
+src/
 node_modules/
 server.bat
 .eslintrc.json

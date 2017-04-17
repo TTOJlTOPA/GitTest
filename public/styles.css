@@ -416,6 +416,7 @@ header {
 /* Error */
 .error-block {
     margin-left: 2%;
+    margin-bottom: 80%;
     min-height: 90%;
 }
 
