@@ -17,8 +17,13 @@
   "homepage": "https://github.com/TTOJlTOPA/GitTest#readme",
   "dependencies": {
     "body-parser": "^1.17.1",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.3",
     "express": "^4.15.2",
-    "node-static": "^0.7.9"
+    "express-session": "^1.15.2",
+    "node-static": "^0.7.9",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
     "eslint": "^3.19.0",

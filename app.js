@@ -1,7 +1,7 @@
 const express = require('express');
-
 const bodyParser = require('body-parser');
-
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 const app = express();
 
 const articles = [
@@ -1123,13 +1123,48 @@ const users = [
     },
 ];
 
+passport.use(new LocalStrategy({
+        usernameField: 'username',
+        passwordField: 'password',
+        session: false,
+    }, (username, password, done) => {
+        let user = users.find(userCur => userCur.login === username);
+        if (!user || user.password !== password) {
+            done(null, false);
+        } else {
+            done(null, user);
+        }
+}));
+
+passport.serializeUser((user, done) => done(null, user.login));
+
+passport.deserializeUser((login, done) => {
+    let user = users.find(userCur => userCur.login === login);
+    if (user) {
+        done(null, user);
+    } else {
+        done(null, false);
+    }
+});
+
 app.set('port', (process.env.PORT || 3000));
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(passport.initialize());
 
-app.get('/user', (req, res) => {
-    res.json(users.sort((a, b) => {
+app.get('/user', (req, res) => res.json(users.sort((a, b) => {
+    if (a.login.toLowerCase() < b.login.toLowerCase()) {
+        return -1;
+    }
+    if (a.login.toLowerCase() > b.login.toLowerCase()) {
+        return 1;
+    }
+    return 0;
+})));
+
+app.get('/authors', (req, res) => {
+    users.sort((a, b) => {
         if (a.login.toLowerCase() < b.login.toLowerCase()) {
             return -1;
         }
@@ -1137,34 +1172,33 @@ app.get('/user', (req, res) => {
             return 1;
         }
         return 0;
-    }));
+    });
+    res.json(users.map(user => user.login));
 });
 
-app.get('/article', (req, res) => {
-    if (req.query.id) {
-        return res.json(articles.find(article => Number(req.query.id) === article.id));
-    }
-    res.json(articles.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()));
-});
+app.get('/article', (req, res) => res.json(articles.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())));
 
-app.get('/length', (req, res) => {
-    res.json(articles.length);
-});
+app.get('/article/:id', (req, res) => res.json(articles.find(article => Number(req.query.id) === article.id)));
+
+app.get('/length', (req, res) => res.json(articles.length));
 
 app.get('/tags', (req, res) => {
     if (req.query.tag) {
-        return res.json(tags.find(tag => req.query.tag === tag));
+        res.json(tags.find(tag => req.query.tag === tag));
+    } else {
+        res.json(tags.sort((a, b) => {
+            if (a.toLowerCase() < b.toLowerCase()) {
+                return -1;
+            }
+            if (a.toLowerCase() > b.toLowerCase()) {
+                return 1;
+            }
+            return 0;
+        }));
     }
-    res.json(tags.sort((a, b) => {
-        if (a.toLowerCase() < b.toLowerCase()) {
-            return -1;
-        }
-        if (a.toLowerCase() > b.toLowerCase()) {
-            return 1;
-        }
-        return 0;
-    }));
 });
+
+app.get('/login', (req, res) => res.json(null));
 
 app.post('/article', (req, res) => {
     const article = {
@@ -1195,6 +1229,8 @@ app.post('/tag', (req, res) => {
     }));
 });
 
+app.post('/login', passport.authenticate('local', { failureRedirect: '/login' }), (req, res) => res.json(req.user.login));
+
 app.put('/article', (req, res) => {
     const articleIndex = articles.findIndex(article => req.body.id === article.id);
     articles[articleIndex].summary = req.body.summary;
@@ -1210,6 +1246,4 @@ app.delete('/article', (req, res) => {
     res.json(articles.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()));
 });
 
-app.listen(app.get('port'), () => {
-    console.log("Server running in the 90's on port: ", app.get('port'));
-});
+app.listen(app.get('port'), () => console.log("Server running in the 90's on port: ", app.get('port')));

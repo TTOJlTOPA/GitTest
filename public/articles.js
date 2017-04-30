@@ -53,12 +53,12 @@ const httpRequests = (function () {
         });
     }
 
-    function httpPostArticle(article) {
+    function httpPost(url, obj) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', '/article');
+            xhr.open('POST', url);
             xhr.setRequestHeader('content-type', 'application/json');
-            xhr.send(JSON.stringify(article));
+            xhr.send(obj);
             xhr.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
                     resolve(this.responseText);
@@ -72,33 +72,12 @@ const httpRequests = (function () {
         });
     }
 
-    function httpPostTag(tag) {
+    function httpPut(url, obj) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', '/tag');
+            xhr.open('PUT', url);
             xhr.setRequestHeader('content-type', 'application/json');
-            xhr.send(JSON.stringify({
-                tag,
-            }));
-            xhr.onload = function () {
-                if (this.status >= 200 && this.status < 300) {
-                    resolve(this.responseText);
-                } else {
-                    reject({
-                        status: this.status,
-                        statusText: xhr.statusText,
-                    });
-                }
-            };
-        });
-    }
-
-    function httpPutArticle(article) {
-        return new Promise((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            xhr.open('PUT', '/article');
-            xhr.setRequestHeader('content-type', 'application/json');
-            xhr.send(JSON.stringify(article));
+            xhr.send(obj);
             xhr.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
                     resolve(this.responseText);
@@ -115,9 +94,8 @@ const httpRequests = (function () {
     return {
         httpGet,
         httpDeleteArticle,
-        httpPostArticle,
-        httpPostTag,
-        httpPutArticle,
+        httpPost,
+        httpPut,
     };
 }());
 
@@ -246,8 +224,8 @@ const articlesLogic = (function () {
         createArticles(articles).forEach((article) => {
             ARTICLE_LIST.appendChild(article);
         });
-        httpRequests.httpGet('/user').then(value => {
-            authors = JSON.parse(value).map(userCur => userCur.login);
+        httpRequests.httpGet('/authors').then(value => {
+            authors = JSON.parse(value);
             DYNAMIC_BLOCK.appendChild(appendFilters());
             DYNAMIC_BLOCK.appendChild(PAGINATOR_TEMPLATE.content.querySelector('.paginator').cloneNode(true));
             PAGINATOR = document.querySelector('.paginator');
@@ -534,7 +512,6 @@ const authorizationForm = (function () {
     const RETURN_BUTTON_TEMPLATE = document.querySelector('#template-return-button');
     const AUTHORIZATION_INPUT_TEMPLATE = document.querySelector('#template-authorization-input-block');
     const LOGIN_BUTTON_TEMPLATE = document.querySelector('#template-login-button');
-    let users;
 
     function loadForm() {
         DYNAMIC_BLOCK.innerHTML = '';
@@ -543,24 +520,24 @@ const authorizationForm = (function () {
         document.querySelector('.return-button-block').addEventListener('click', handleReturnButtonClick);
         DYNAMIC_BLOCK.appendChild(AUTHORIZATION_INPUT_TEMPLATE.content.querySelector('.authorization-input-block').cloneNode(true));
         DYNAMIC_BLOCK.appendChild(LOGIN_BUTTON_TEMPLATE.content.querySelector('.login-button-block').cloneNode(true));
-        httpRequests.httpGet('/user').then(value => {
-            users = JSON.parse(value);
-            document.querySelector('.login-button-block').addEventListener('click', handleLoginButtonClick);
-        }).catch(error => {
-            errorForm.loadError('Ошибка загрузки с сервера.');
-        });
+        document.querySelector('.login-button-block').addEventListener('click', handleLoginButtonClick);
     }
 
     function handleLoginButtonClick() {
-        let userFind;
-        userFind = users.find(userInfo => userInfo.login === document.forms[0].elements[0].value);
-        if (userFind && userFind.password === document.forms[0].elements[1].value) {
-            user = userFind.login;
-            sessionStorage.setItem('user', JSON.stringify(user));
-            appendArticles(ARTICLES_INDEX_FROM, ARTICLES_INDEX_TO);
-        } else {
-            alert('Неверный логин или пароль!');
-        }
+        httpRequests.httpPost('/login', JSON.stringify({
+            username: document.forms[0].elements[0].value,
+            password: document.forms[0].elements[1].value,
+        })).then(value => {
+            user = JSON.parse(value);
+            if (user) {
+                sessionStorage.setItem('user', value);
+                appendArticles(ARTICLES_INDEX_FROM, ARTICLES_INDEX_TO);
+            } else {
+                alert('Неверный логин или пароль.');
+            }
+        }).catch(error => {
+            errorForm.loadError('Ошибка загрузки с сервера.');
+        });
     }
 
     return {
@@ -651,14 +628,14 @@ const editForm = (function () {
         article.content = document.querySelector('#content-input').value;
         if (articlesService.validateArticle(article)) {
             if (articlesService.getArticle(article.id)) {
-                httpRequests.httpPutArticle(article).then(function () {
+                httpRequests.httpPut('/article', JSON.stringify(article)).then(() => {
                     articlesService.resetArticles();
                     appendArticles(ARTICLES_INDEX_FROM, ARTICLES_INDEX_TO);
                 }).catch(error => {
                     errorForm.loadError('Ошибка загрузки с сервера.');
                 });
             } else {
-                httpRequests.httpPostArticle(article).then(function () {
+                httpRequests.httpPost('/article', JSON.stringify(article)).then(() => {
                     articlesService.resetArticles();
                     appendArticles(ARTICLES_INDEX_FROM, ARTICLES_INDEX_TO);
                 }).catch(error => {
@@ -691,7 +668,7 @@ const editForm = (function () {
         if (document.querySelector('#tag-input').value.trim() !== '' && tags.indexOf(document.querySelector('#tag-input').value) === -1) {
             newTag = document.querySelector('#tag-input').value;
             document.querySelector('#tag-input').value = '';
-            Promise.all([httpRequests.httpPostTag(newTag), httpRequests.httpGet('/tags')]).then(value => {
+            Promise.all([httpRequests.httpPost('/tag', JSON.stringify({ newTag })), httpRequests.httpGet('/tags')]).then(value => {
                 tags = JSON.parse(value[1]);
                 articlesService.setTags(tags);
                 loadExistentTags(document);
