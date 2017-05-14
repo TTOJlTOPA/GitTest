@@ -403,7 +403,7 @@ const articlesLogic = (function () {
                 CHOSEN_TAGS_LIST.appendChild(CHOSEN_TAG_TEMPLATE.content.querySelector('.tag-holder').cloneNode(true));
             });
             document.querySelectorAll('.chosen-tag').forEach((tagCur) => {
-                tag.addEventListener('click', handleChosenTagClick);
+                tagCur.addEventListener('click', handleChosenTagClick);
             });
         } else {
             alert('Невозможно добавить тег!');
@@ -668,7 +668,7 @@ const editForm = (function () {
         if (document.querySelector('#tag-input').value.trim() !== '' && tags.indexOf(document.querySelector('#tag-input').value) === -1) {
             newTag = document.querySelector('#tag-input').value;
             document.querySelector('#tag-input').value = '';
-            Promise.all([httpRequests.httpPost('/tag', JSON.stringify({ newTag })), httpRequests.httpGet('/tags')]).then(value => {
+            Promise.all([httpRequests.httpPost('/tag', JSON.stringify({ tag: newTag })), httpRequests.httpGet('/tags')]).then(value => {
                 tags = JSON.parse(value[1]);
                 articlesService.setTags(tags);
                 loadExistentTags(document);
