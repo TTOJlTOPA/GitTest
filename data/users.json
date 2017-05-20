@@ -1,17 +1,17 @@
-{"_id":{"$oid":"59188f74fcdcbe1334292c3c"},"login":"alizar","password":"alizar"}
-{"_id":{"$oid":"59188f74fcdcbe1334292c3d"},"login":"Anrewer","password":"Anrewer"}
-{"_id":{"$oid":"59188f74fcdcbe1334292c3e"},"login":"igor_suhorukov","password":"igor_suhorukov"}
-{"_id":{"$oid":"59188f74fcdcbe1334292c3f"},"login":"krasandm","password":"krasandm"}
-{"_id":{"$oid":"59188f74fcdcbe1334292c40"},"login":"lany","password":"lany"}
-{"_id":{"$oid":"59188f74fcdcbe1334292c41"},"login":"larichev","password":"larichev"}
-{"_id":{"$oid":"59188f74fcdcbe1334292c42"},"login":"Madrobots","password":"Madrobots"}
-{"_id":{"$oid":"59188f74fcdcbe1334292c43"},"login":"marks","password":"marks"}
-{"_id":{"$oid":"59188f74fcdcbe1334292c44"},"login":"Nubus","password":"Nubus"}
-{"_id":{"$oid":"59188f74fcdcbe1334292c45"},"login":"ragequit","password":"ragequit"}
-{"_id":{"$oid":"59188f74fcdcbe1334292c46"},"login":"saul","password":"saul"}
-{"_id":{"$oid":"59188f74fcdcbe1334292c47"},"login":"SLY_G","password":"SLY_G"}
-{"_id":{"$oid":"59188f74fcdcbe1334292c48"},"login":"Test","password":"321"}
-{"_id":{"$oid":"59188f74fcdcbe1334292c49"},"login":"TTOJlTOPA","password":"123"}
-{"_id":{"$oid":"59188f74fcdcbe1334292c4a"},"login":"admin","password":"admin"}
-{"_id":{"$oid":"59188f74fcdcbe1334292c4b"},"login":"m8","password":"u wot m8?"}
-{"_id":{"$oid":"59188f74fcdcbe1334292c4c"},"login":"Peek","password":"Yee"}
+{"_id":{"$oid":"59208eebb814421520486152"},"login":"igor_suhorukov","password":"igor_suhorukov","__v":0}
+{"_id":{"$oid":"59208eebb814421520486153"},"login":"krasandm","password":"krasandm","__v":0}
+{"_id":{"$oid":"59208eebb814421520486158"},"login":"Nubus","password":"Nubus","__v":0}
+{"_id":{"$oid":"59208eebb814421520486151"},"login":"Anrewer","password":"Anrewer","__v":0}
+{"_id":{"$oid":"59208eebb814421520486150"},"login":"alizar","password":"alizar","__v":0}
+{"_id":{"$oid":"59208eebb81442152048615d"},"login":"TTOJlTOPA","password":"123","__v":0}
+{"_id":{"$oid":"59208eebb814421520486156"},"login":"Madrobots","password":"Madrobots","__v":0}
+{"_id":{"$oid":"59208eebb814421520486155"},"login":"larichev","password":"larichev","__v":0}
+{"_id":{"$oid":"59208eebb81442152048615b"},"login":"SLY_G","password":"SLY_G","__v":0}
+{"_id":{"$oid":"59208eebb814421520486157"},"login":"marks","password":"marks","__v":0}
+{"_id":{"$oid":"59208eebb81442152048615a"},"login":"saul","password":"saul","__v":0}
+{"_id":{"$oid":"59208eebb814421520486160"},"login":"Peek","password":"Yee","__v":0}
+{"_id":{"$oid":"59208eebb81442152048615f"},"login":"m8","password":"u wot m8?","__v":0}
+{"_id":{"$oid":"59208eebb81442152048615c"},"login":"Test","password":"321","__v":0}
+{"_id":{"$oid":"59208eebb814421520486154"},"login":"lany","password":"lany","__v":0}
+{"_id":{"$oid":"59208eebb814421520486159"},"login":"ragequit","password":"ragequit","__v":0}
+{"_id":{"$oid":"59208eebb81442152048615e"},"login":"admin","password":"admin","__v":0}

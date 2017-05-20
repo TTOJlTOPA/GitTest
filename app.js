@@ -8,7 +8,6 @@ const app = express();
 passport.use(new LocalStrategy({
         usernameField: 'username',
         passwordField: 'password',
-        session: false,
     }, (username, password, done) => {
         let user;
         mongo.getUsers()
@@ -126,8 +125,7 @@ app.post('/tag', (req, res) => mongo.insertTag({tag: req.body.tag})
         return 0;
     })))
         .catch(error => console.log(error)))
-    .catch(error => console.log(error))
-);
+    .catch(error => console.log(error)));
 
 app.post('/login', passport.authenticate('local', { failureRedirect: '/login' }), (req, res) => res.json(req.user.login));
 
@@ -143,8 +141,7 @@ app.put('/article', (req, res) => mongo.getArticleById(req.body.id)
                 .catch(error => console.log(error)))
             .catch(error => console.log(error))
         })
-    .catch(error => console.log(error))
-);
+    .catch(error => console.log(error)));
 
 app.delete('/article', (req, res) => mongo.getArticleById(req.body.id)
     .then(value => {
@@ -155,5 +152,4 @@ app.delete('/article', (req, res) => mongo.getArticleById(req.body.id)
                 .catch(error => console.log(error)))
             .catch(error => console.log(error))
     })
-    .catch(error => console.log(error))
-);
+    .catch(error => console.log(error)));

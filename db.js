@@ -1,47 +1,64 @@
-const MongoClient = require('mongodb').MongoClient;
+const mongoose = require('mongoose');
 let mongodb;
 
+const ArticleSchema = mongoose.Schema({
+    id: String,
+    title: String,
+    summary: String,
+    createdAt: Date,
+    author: String,
+    tags: Array,
+    content: String,
+    isHidden: Boolean,
+});
+const TagSchema = mongoose.Schema({
+    tag: String,
+});
+const UserSchema = mongoose.Schema({
+    login: String,
+    password: String,
+});
+
+const Articles = mongoose.model('Articles', ArticleSchema);
+const Tags = mongoose.model('Tags', TagSchema);
+const Users = mongoose.model('Users', UserSchema);
+
 function connect(url, done) {
-    if (mongodb) {
+    mongoose.connect(url);
+    mongodb = mongoose.connection;
+    mongodb.on('error', () => console.log('error'));
+    mongodb.once('open', () => {
+        console.log('connected');
         done();
-    } else {
-        MongoClient.connect(url, (err, db) => {
-            if (err) {
-                done(err);
-            } else {
-                mongodb = db;
-                done();
-            }
-        });
-    }
+    });
 }
 
 function getArticles() {
-    return mongodb.collection('articles').find().toArray();
+    return Articles.find();
 }
 
 function getArticleById(articleId) {
-    return mongodb.collection('articles').findOne({id: articleId});
+    return Articles.findOne({ id: articleId });
 }
 
 function getTags() {
-    return mongodb.collection('tags').find().toArray();
+    return Tags.find();
 }
 
 function getUsers() {
-    return mongodb.collection('users').find().toArray();
+    return Users.find();
 }
 
 function insertArticle(article) {
-    return mongodb.collection('articles').insert(article);
+    return Articles.create(article);
 }
 
 function insertTag(tag) {
-    return mongodb.collection('tags').insert(tag);
+    return Tags.create(tag);
 }
 
 function editArticle(articleId, newArticle) {
-    return mongodb.collection('articles').updateOne({id: articleId}, newArticle);
+    return Articles.update({ id: articleId }, newArticle);
 }
 
 module.exports = {
