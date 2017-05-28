@@ -1,5 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const mongo = require('./db');
@@ -32,9 +34,12 @@ passport.deserializeUser((login, done) => {
 
 app.set('port', (process.env.PORT || 3000));
 app.use(express.static('public'));
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(session({ secret: 'secret key' }));
 app.use(passport.initialize());
+app.use(passport.session());
 
 mongo.connect('mongodb://localhost:27017/siteEP', (err) => {
     if (err) {
